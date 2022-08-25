@@ -18,7 +18,7 @@ class Balls extends Frame implements Observer, ActionListener, ItemListener {
     private Frame f;  //Управляющее окно
     private Button b;
     private Choice c, c1;
-    private TextField tf;
+    private TextField tfNumber, tfSpeed;
 
     Balls() {
         this.addWindowListener(new WindowAdapter2());
@@ -47,9 +47,12 @@ class Balls extends Frame implements Observer, ActionListener, ItemListener {
         c1.addItemListener(this);
         f.add(c, new Point(90, 20));
 
-        tf = new TextField();
-        f.add(tf);
-        
+        tfNumber = new TextField();
+        f.add(tfNumber);
+
+        tfSpeed = new TextField();
+        f.add(tfSpeed);
+
         f.setVisible(true);
 
         this.setSize(500, 200);  // Демонстрационное окно
@@ -78,29 +81,34 @@ class Balls extends Frame implements Observer, ActionListener, ItemListener {
     }
 
     public void actionPerformed(ActionEvent aE) {
-        String str = aE.getActionCommand();
-        if (str.equals("OK")) {
-            switch (c.getSelectedIndex()) {
-                case 0:
-                    col = Color.blue;
-                    break;
-                case 1:
-                    col = Color.green;
-                    break;
-                case 2:
-                    col = Color.red;
-                    break;
-                case 3:
-                    col = Color.black;
-                    break;
-                case 4:
-                    col = Color.yellow;
-                    break;
+        if (Main.count < 10) {
+            String str = aE.getActionCommand();
+            if (str.equals("OK")) {
+                switch (c.getSelectedIndex()) {
+                    case 0:
+                        col = Color.blue;
+                        break;
+                    case 1:
+                        col = Color.green;
+                        break;
+                    case 2:
+                        col = Color.red;
+                        break;
+                    case 3:
+                        col = Color.black;
+                        break;
+                    case 4:
+                        col = Color.yellow;
+                        break;
+                }
+                Ball ball = new Ball(col, this.tfNumber.getText());
+                LL.add(ball);
+                ball.addObserver(this);
             }
-            Ball ball = new Ball(col, this.tf.getText());
-            LL.add(ball);
-            ball.addObserver(this);
+        } else {
+            System.out.println("Количество фигур слишком велико");
         }
+
         repaint();
     }
 }
@@ -120,6 +128,7 @@ class Ball extends Observable implements Runnable {
         y = 29;
         this.col = col;
         Main.count++;
+        //thr = new Thread(this, Main.count + ":" + text + ":");
         thr = new Thread(this, Main.count + ":" + text + ":");
         thr.start();
     }
